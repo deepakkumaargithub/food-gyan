@@ -1,0 +1,31 @@
+<mat-toolbar color="primary">
+  <a routerLink="/" class="text-white text-decoration-none">
+    <span>
+      <mat-icon>restaurant_menu</mat-icon>
+      Food Gyan
+    </span>
+  </a>
+  <span class="spacer"></span>
+  <ng-container *ngIf="authService.isLoggedIn(); else showLogin">
+
+    <button mat-button routerLink="/recipes">My Recipes</button>
+    <button mat-button (click)="navigateToDiscoverRecipes()">Discover Recipes</button>
+    <button mat-button routerLink="/recipes/new">Add Recipe</button>
+
+      <mat-icon class="mr-1">account_circle</mat-icon>
+      <span>{{ authService.getCurrentUsername() }}</span> 
+
+
+    <button mat-icon-button (click)="logout()" aria-label="Logout">
+      <mat-icon>exit_to_app</mat-icon>
+    </button>
+  </ng-container>
+  <ng-template #showLogin>
+    <button mat-button routerLink="/login">Login</button>
+    <button mat-button routerLink="/register">Register</button>
+  </ng-template>
+</mat-toolbar>
+
+<main class="container mt-4">
+  <router-outlet></router-outlet>
+</main>

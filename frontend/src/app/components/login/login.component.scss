@@ -1,0 +1,58 @@
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.form-container mat-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 32px;
+  background: linear-gradient(to bottom, #f5efe4, #efebe5);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 243, 224, 0.5);
+}
+
+mat-card-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+mat-card-title {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #3f51b5;
+}
+
+mat-form-field {
+  margin-bottom: 1.5rem;
+}
+
+button.mat-raised-button {
+  padding: 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+button.mat-raised-button:hover:not(:disabled) {
+  background-color: #5c6bc0;
+}
+
+mat-spinner {
+  margin: 0 auto; 
+}
+
+mat-card-actions p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+mat-card-actions a {
+  font-weight: 500;
+}

@@ -29,6 +29,7 @@ exports.create = async (session, recipeData, userId) => {
             calories: toInteger($calories),
             protein: toInteger($protein),
             allergyInfo: $allergyInfo,
+            private: $private,
             createdAt: timestamp(),
             updatedAt: timestamp()
         })
@@ -45,7 +46,7 @@ exports.findAllByUserId = async (session, userId) => {
     const result = await session.run(
         `
         MATCH (u:User {id: $userId})-[:CREATED]->(r:Recipe)
-        RETURN r
+        RETURN r, u.id AS creatorId
         ORDER BY r.createdAt DESC
         `,
         { userId }
@@ -82,6 +83,7 @@ exports.findAll = async (session) => {
     const result = await session.run(
         `
         MATCH (u:User)-[:CREATED]->(r:Recipe)
+        WHERE r.private <> true
         RETURN r, u.id AS creatorId
         ORDER BY r.createdAt DESC
         `
@@ -103,6 +105,7 @@ exports.update = async (session, recipeId, recipeData, userId) => {
             steps: $steps,
             calories: toInteger($calories),
             protein: toInteger($protein),
+            private: $private,
             allergyInfo: $allergyInfo,
             updatedAt: timestamp()
         }

@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-recipe-form',
@@ -28,7 +29,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    MatCheckboxModule
   ]
 })
 export class RecipeFormComponent implements OnInit {
@@ -50,6 +52,7 @@ export class RecipeFormComponent implements OnInit {
       description: ['', Validators.required],
       ingredients: ['', Validators.required],
       steps: ['', Validators.required],
+      private:['', Validators.required],
       calories: [0, [Validators.required, Validators.min(0)]],
       protein: [0, [Validators.required, Validators.min(0)]],
       allergyInfo: ['']

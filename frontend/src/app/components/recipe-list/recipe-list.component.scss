@@ -10,6 +10,7 @@
   margin-left: 16px;
 }
 
+
 .loading-spinner, .no-recipes {
   display: flex;
   flex-direction: column;
@@ -59,7 +60,7 @@
 
 .description {
   white-space: pre-wrap;
-  color: #555;
+  color: #040404;
   font-size: 0.95rem;
-  line-height: 1.5; 
+  line-height: 1.5;
 }

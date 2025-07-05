@@ -99,7 +99,7 @@ export class RecipeListComponent implements OnInit {
             this.snackBar.open('Recipe deleted successfully', 'Close', { duration: 3000 });
             this.loadRecipes();
           },
-          error: (err: any) => { 
+          error: (err: any) => {
             this.snackBar.open('Failed to delete recipe', 'Close', { duration: 3000 });
             console.error('Delete Recipe Error:', err);
           }

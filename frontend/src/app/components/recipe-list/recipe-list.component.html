@@ -28,7 +28,7 @@
         <p *ngIf="recipe.allergyInfo"><strong>Allergy Info:</strong> {{ recipe.allergyInfo }}</p>
       </mat-card-content>
       <mat-card-actions align="end">
-        <ng-container *ngIf="isRecipeOwner(recipe)">
+        <ng-container *ngIf="isRecipeOwner(recipe) && isDiscoverRecipesPage">
           <button mat-icon-button color="primary" (click)="editRecipe(recipe.id)" aria-label="Edit recipe">
             <mat-icon>edit</mat-icon>
           </button>

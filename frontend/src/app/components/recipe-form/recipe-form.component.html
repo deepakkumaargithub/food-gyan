@@ -41,7 +41,9 @@
              <mat-error *ngIf="recipeForm.get('protein')?.hasError('required')">Protein is required</mat-error>
           </mat-form-field>
         </div>
-
+        <mat-checkbox formControlName="private" class="mb-4">
+          Make this recipe private
+        </mat-checkbox>
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Allergy Info (optional)</mat-label>
           <input matInput formControlName="allergyInfo">

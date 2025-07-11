@@ -6,12 +6,11 @@
   padding: 16px 0;
   font-size: 1rem;
   font-weight: 500;
-  color: #3f51b5;
+  color: black;
   margin-left: 16px;
 }
 
-
-.loading-spinner, .no-recipes {
+.no-recipes {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,10 +24,8 @@
 
 .no-recipes-icon {
   font-size: 64px;
-  width: 64px;
-  height: 64px;
   margin-bottom: 16px;
-  color: #3f51b5;
+  color: #FF921C;
 }
 
 .recipe-grid {
@@ -45,6 +42,7 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   border-radius: 12px;
   border: 1px solid rgba(255, 243, 224, 0.5);
+  padding: 16px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -53,9 +51,27 @@
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 
-.recipe-card mat-card-content {
+.recipe-title {
+  display: inline-block;
+  padding: 4px 8px;
+  border: 2px solid black;
+  border-radius: 6px;
+}
+
+.card-header h3 {
+  font-size: 1.7rem;
+  margin-bottom: 4px;
+  color: #FF921C;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.card-content {
   flex-grow: 1;
-  padding: 16px;
+  padding-top: 8px;
 }
 
 .description {
@@ -63,4 +79,24 @@
   color: #040404;
   font-size: 0.95rem;
   line-height: 1.5;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform 0.2s ease;
+}
+
+.icon-button:hover {
+  transform: scale(1.2);
 }

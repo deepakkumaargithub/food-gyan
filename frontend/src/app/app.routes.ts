@@ -8,26 +8,22 @@ import { AuthGuard } from './guards/auth.guard';
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  {
-    path: 'recipes',
-    component: RecipeListComponent,
-    canActivate: [AuthGuard]
-  },
+  { path: 'recipes', component: RecipeListComponent, canActivate: [AuthGuard] },
   {
     path: 'recipes/discover',
     component: RecipeListComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'recipes/new',
     component: RecipeFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   {
     path: 'recipes/edit/:id',
     component: RecipeFormComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   },
   { path: '', redirectTo: '/recipes', pathMatch: 'full' },
-  { path: '**', redirectTo: '/recipes' }
+  { path: '**', redirectTo: '/recipes' },
 ];

@@ -4,39 +4,34 @@
     <h1 *ngIf="isDiscoverRecipesPage">Discover Recipes</h1>
   </div>
 
-  <div *ngIf="isLoading" class="loading-spinner">
-    <mat-spinner></mat-spinner>
-  </div>
-
-  <div *ngIf="!isLoading && recipes.length === 0" class="no-recipes">
-    <mat-icon class="no-recipes-icon">ramen_dining</mat-icon>
+  <div *ngIf="recipes.length === 0" class="no-recipes">
+    <div class="no-recipes-icon">🍜</div>
     <h2 *ngIf="!isDiscoverRecipesPage">No recipes found.</h2>
     <h2 *ngIf="isDiscoverRecipesPage">No recipes to discover.</h2>
     <p *ngIf="!isDiscoverRecipesPage">Get started by adding your first recipe!</p>
   </div>
 
-  <div *ngIf="!isLoading && recipes.length > 0" class="recipe-grid">
-    <mat-card *ngFor="let recipe of recipes" class="recipe-card">
-      <mat-card-header>
-        <mat-card-title>{{ recipe.name }}</mat-card-title>
-        <mat-card-subtitle>Calories: {{ recipe.calories }} | Protein: {{ recipe.protein }}g</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p class="description"><strong>Description: </strong>{{ recipe.description }}</p>
-        <p><strong>Ingredients: </strong> {{ recipe.ingredients }}</p>
-         <p><strong>Steps:</strong> {{ recipe.steps }}</p>
+  <div *ngIf="recipes.length > 0" class="recipe-grid">
+    <div *ngFor="let recipe of recipes" class="recipe-card">
+      <div class="card-header">
+        <h3 class="recipe-title" >{{ recipe.name.toUpperCase() }}</h3>
+        <p class="subtitle">Calories: {{ recipe.calories }} | Protein: {{ recipe.protein }}g</p>
+      </div>
+      <div class="card-content">
+        <p class="description">Description: {{ recipe.description }}</p>
+        <p> Ingredients: {{ recipe.ingredients }}</p>
+        <p>Steps:{{ recipe.steps }}</p>
         <p *ngIf="recipe.allergyInfo"><strong>Allergy Info:</strong> {{ recipe.allergyInfo }}</p>
-      </mat-card-content>
-      <mat-card-actions align="end">
-        <ng-container *ngIf="isRecipeOwner(recipe) && isDiscoverRecipesPage">
-          <button mat-icon-button color="primary" (click)="editRecipe(recipe.id)" aria-label="Edit recipe">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="deleteRecipe(recipe.id)" aria-label="Delete recipe">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </ng-container>
-      </mat-card-actions>
-    </mat-card>
+      </div>
+      <div class="card-actions" *ngIf="isRecipeOwner(recipe) && !isDiscoverRecipesPage">
+        <button class="icon-button" (click)="editRecipe(recipe.id)" title="Edit Recipe">
+  <img src="assets/images/edit.png" width="20" height="20" />
+</button>
+
+        <button class="icon-button" (click)="deleteRecipe(recipe.id)" title="Delete Recipe">
+          <img src="assets/images/del.png" width="20" height="20" />
+        </button>
+      </div>
+    </div>
   </div>
 </div>

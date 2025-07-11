@@ -1,62 +1,77 @@
-<div class="form-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>{{ pageTitle }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-       <div *ngIf="isLoading && isEditMode" class="loading-spinner">
-          <mat-spinner></mat-spinner>
-       </div>
-      <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Recipe Name</mat-label>
-          <input matInput formControlName="name" required>
-           <mat-error *ngIf="recipeForm.get('name')?.hasError('required')">Name is required</mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description" required></textarea>
-           <mat-error *ngIf="recipeForm.get('description')?.hasError('required')">Description is required</mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Ingredients</mat-label>
-          <textarea matInput formControlName="ingredients" required cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="3"></textarea>
-           <mat-error *ngIf="recipeForm.get('ingredients')?.hasError('required')">Ingredients are required</mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Steps</mat-label>
-          <textarea matInput formControlName="steps" required cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="5"></textarea>
-           <mat-error *ngIf="recipeForm.get('steps')?.hasError('required')">Steps are required</mat-error>
-        </mat-form-field>
+<div class="form-card">
 
-        <div class="row">
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Calories</mat-label>
-            <input matInput formControlName="calories" type="number" required>
-            <mat-error *ngIf="recipeForm.get('calories')?.hasError('required')">Calories are required</mat-error>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="col">
-            <mat-label>Protein (g)</mat-label>
-            <input matInput formControlName="protein" type="number" required>
-             <mat-error *ngIf="recipeForm.get('protein')?.hasError('required')">Protein is required</mat-error>
-          </mat-form-field>
+  <div class="page-title">
+    <h2>{{ pageTitle }}</h2>
+  </div>
+
+  <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <input id="name" placeholder="Recipe Name*" type="text" formControlName="name" />
+      <div class="error" *ngIf="recipeForm.get('name')?.hasError('required') && (recipeForm.get('name')?.touched || recipeForm.get('name')?.dirty)">
+        Name is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <textarea id="description" placeholder="Description*" formControlName="description"></textarea>
+      <div class="error" *ngIf="recipeForm.get('description')?.hasError('required') && (recipeForm.get('description')?.touched || recipeForm.get('description')?.dirty)">
+        Description is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <textarea id="ingredients" placeholder="Ingredients*" formControlName="ingredients" rows="3"></textarea>
+      <div class="error" *ngIf="recipeForm.get('ingredients')?.hasError('required') && (recipeForm.get('ingredients')?.touched || recipeForm.get('ingredients')?.dirty)">
+        Ingredients are required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <textarea id="steps" placeholder="Steps*" formControlName="steps" rows="5"></textarea>
+      <div class="error" *ngIf="recipeForm.get('steps')?.hasError('required') && (recipeForm.get('steps')?.touched || recipeForm.get('steps')?.dirty)">
+        Steps are required
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <input id="calories" placeholder="Calories*" type="number" formControlName="calories" />
+        <div class="error" *ngIf="recipeForm.get('calories')?.hasError('required') && (recipeForm.get('calories')?.touched || recipeForm.get('calories')?.dirty)">
+          Calories is required
         </div>
-        <mat-checkbox formControlName="private" class="mb-4">
-          Make this recipe private
-        </mat-checkbox>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Allergy Info (optional)</mat-label>
-          <input matInput formControlName="allergyInfo">
-        </mat-form-field>
+        <div class="error" *ngIf="recipeForm.get('calories')?.hasError('min') && (recipeForm.get('calories')?.touched || recipeForm.get('calories')?.dirty)">
+          Must be positive
+        </div>
+      </div>
 
-        <mat-card-actions>
-          <button mat-raised-button color="primary" type="submit" [disabled]="recipeForm.invalid || isLoading">
-            <span *ngIf="!isLoading">{{ isEditMode ? 'Update Recipe' : 'Create Recipe' }}</span>
-            <mat-spinner *ngIf="isLoading" [diameter]="24"></mat-spinner>
-          </button>
-          <button mat-stroked-button type="button" (click)="router.navigate(['/recipes'])">Cancel</button>
-        </mat-card-actions>
-      </form>
-    </mat-card-content>
-  </mat-card>
+      <div class="form-group">
+        <input id="protein" placeholder="Protein*" type="number" formControlName="protein" />
+        <div class="error" *ngIf="recipeForm.get('protein')?.hasError('required') && (recipeForm.get('protein')?.touched || recipeForm.get('protein')?.dirty)">
+          Protein is required
+        </div>
+        <div class="error" *ngIf="recipeForm.get('protein')?.hasError('min') && (recipeForm.get('protein')?.touched || recipeForm.get('protein')?.dirty)">
+          Must be positive
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group checkbox-group">
+      <label>
+        <input type="checkbox" formControlName="private" />
+        Keep this recipe private
+      </label>
+    </div>
+
+    <div class="form-group">
+
+      <input id="allergyInfo" placeholder="Allergy Info" type="text" formControlName="allergyInfo" />
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="recipeForm.invalid">
+        {{ isEditMode ? 'Update Recipe' : 'Create Recipe' }}
+      </button>
+      <button type="button" (click)="router.navigate(['/recipes'])">Cancel</button>
+    </div>
+  </form>
 </div>

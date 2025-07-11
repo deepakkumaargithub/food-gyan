@@ -97,7 +97,7 @@ exports.findAll = async (session) => {
 exports.update = async (session, recipeId, recipeData, userId) => {
     const result = await session.run(
         `
-        MATCH (u:User {id: $userId})-[:CREATED]->(r:Recipe {id: $recipeId})
+        MATCH (u:User {id: $userId})-[c:CREATED]->(r:Recipe {id: $recipeId})
         SET r += {
             name: $name,
             description: $description,
@@ -107,8 +107,8 @@ exports.update = async (session, recipeId, recipeData, userId) => {
             protein: toInteger($protein),
             private: $private,
             allergyInfo: $allergyInfo,
-            updatedAt: timestamp()
-        }
+            updatedAt: datetime()
+        },c.isCreatedBy = "deepak"
         RETURN r
         `,
         { userId, recipeId, ...recipeData }

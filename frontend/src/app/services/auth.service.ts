@@ -77,7 +77,7 @@ export class AuthService {
       try {
         const decoded: any = jwtDecode(token);
 
-        return decoded.user.username;
+        return decoded.user.username.toUpperCase();
       } catch (error) {
         console.error('Error decoding token for username:', error);
         return null;

@@ -1,29 +1,32 @@
 <div class="form-container">
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title>Login</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Email</mat-label>
-          <input matInput formControlName="email" type="email" required>
-          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is required</mat-error>
-          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Please enter a valid email</mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>Password</mat-label>
-          <input matInput formControlName="password" type="password" required>
-           <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
-        </mat-form-field>
-        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading" class="full-width">
-           <span *ngIf="!isLoading">Login</span>
-           <mat-spinner *ngIf="isLoading" [diameter]="24"></mat-spinner>
-        </button>
-      </form>
-    </mat-card-content>
-     <mat-card-actions class="text-center">
-       <p>Don't have an account? <a routerLink="/register">Register here</a></p>
-    </mat-card-actions>
-  </mat-card>
+  <div class="form-card">
+    <h2 class="form-title">Login</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <div class="form-group">
+        <input id="email" placeholder="Email*" type="email" formControlName="email" />
+        <div class="error" *ngIf="loginForm.get('email')?.hasError('required') && (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)">
+          Email is required
+        </div>
+        <div class="error" *ngIf="loginForm.get('email')?.hasError('email') && (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)">
+          Please enter a valid email
+        </div>
+      </div>
+
+      <div class="form-group">
+        <input id="password" placeholder="Password*" type="password" formControlName="password" />
+        <div class="error" *ngIf="loginForm.get('password')?.hasError('required') && (loginForm.get('password')?.touched || loginForm.get('password')?.dirty)">
+          Password is required
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid">
+        <span >Login</span>
+      </button>
+    </form>
+
+    <div class="form-footer">
+      <p>Don't have an account? <a routerLink="/register">Register here</a></p>
+    </div>
+  </div>
 </div>

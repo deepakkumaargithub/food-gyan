@@ -2,57 +2,88 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 80vh;
   padding: 20px;
   box-sizing: border-box;
 }
 
-.form-container mat-card {
+.form-card {
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
   padding: 32px;
-  background: linear-gradient(to bottom, #f5efe4, #efebe5);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 243, 224, 0.5);
+  background: #F2F0EA;
+  border-radius: 8px;
+  border: 2px solid #F2F0EA;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease, border 0.3s ease, transform 0.3s ease;
+}
+.form-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
 }
 
-mat-card-header {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-}
 
-mat-card-title {
+.form-title {
+  text-align: center;
   font-size: 1.8rem;
-  font-weight: 500;
-  color: #3f51b5;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #FF921C;
 }
 
-mat-form-field {
+.form-group {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 1.5rem;
 }
 
-button.mat-raised-button {
-  padding: 0.5rem 0;
+.form-group input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+button {
+  width: 100%;
+  padding: 0.6rem;
   font-size: 1rem;
   font-weight: 500;
-  transition: background-color 0.3s ease;
+  color: white;
+  background-color: #FF921C;
+  border: none;
+
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Lilita One", sans-serif;
 }
 
-button.mat-raised-button:hover:not(:disabled) {
-  background-color: #5c6bc0;
+#email, #password, #username{
+font-family: "Lilita One", sans-serif;
+border-radius: 8px;
 }
 
-mat-spinner {
-  margin: 0 auto; 
+button:hover:not(:disabled) {
+  background-color: #FF921C;
 }
 
-mat-card-actions p {
-  margin: 0;
+button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #FF921C;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 1.5rem;
   font-size: 0.9rem;
 }
 
-mat-card-actions a {
+.form-footer a {
   font-weight: 500;
 }

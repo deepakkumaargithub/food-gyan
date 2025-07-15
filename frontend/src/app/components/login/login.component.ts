@@ -30,18 +30,7 @@ export class LoginComponent {
     if (this.loginForm.invalid) return;
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
-        Swal.fire({
-          title: 'Login Successful!',
-          text: 'Welcome Back! You’ll now be redirected to your recipe collection.',
-          icon: 'success',
-          confirmButtonText: 'OK',
-          width: '600px',
-          confirmButtonColor: '#FF921C',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.router.navigate(['/recipes']);
-          }
-        });
+           this.router.navigate(['/recipes']);
       },
       error: (err) => {
         const errorMessage =

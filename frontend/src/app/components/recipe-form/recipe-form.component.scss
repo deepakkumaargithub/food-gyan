@@ -1,3 +1,5 @@
+/* --- Recipe Form Component SCSS --- */
+
 .form-card {
   margin: 40px auto;
   max-width: 450px;
@@ -28,6 +30,7 @@ form .form-group {
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
+  position: relative; /* ✅ CRITICAL: For dropdown positioning */
 }
 
 form .form-group input,
@@ -40,6 +43,53 @@ form .form-group textarea {
   font-style: normal;
   font-weight: lighter;
 }
+
+/* ✅ NEW/UPDATED: Styles for the ingredient dropdown menu */
+.dropdown-menu {
+  position: absolute; /* ✅ Positions the dropdown relative to its parent .form-group */
+  top: 100%; /* ✅ Places it directly below the input field */
+  left: 0;
+  right: 0;
+  z-index: 1000; /* ✅ Ensures it appears above other content */
+  float: left;
+  min-width: 100%; /* Makes it as wide as the input */
+  padding: 0.5rem 0;
+  margin: 0.125rem 0 0;
+  font-size: 1rem;
+  color: #212529;
+  text-align: left;
+  list-style: none; /* Removes bullet points */
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+  max-height: 200px; /* ✅ NEW: Limit height */
+  overflow-y: auto; /* ✅ NEW: Add scroll if content overflows */
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1.5rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  color: #16181b;
+  text-decoration: none;
+  background-color: #f8f9fa;
+}
+/* END NEW/UPDATED: Styles for the ingredient dropdown menu */
+
 
 form .form-row {
   display: flex;
@@ -80,10 +130,51 @@ form .form-actions button {
 }
 
 form .form-actions button:hover:enabled {
-  background-color: #ECA427;
+  background-color: #e6831a;
 }
 
 form .form-actions button:disabled {
-  background-color: #aaa;
+  opacity: 0.6;
   cursor: not-allowed;
+}
+
+.selected-ingredients {
+  margin-top: 0.5rem;
+}
+
+.selected-ingredients .badge {
+  display: inline-flex;
+  align-items: center;
+  background-color: #FF921C; /* Use your theme color */
+  color: black;
+  padding: 0.4em 0.6em;
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+  margin-right: 0.5em;
+  margin-bottom: 0.5em; /* Ensure vertical spacing */
+  font-family: "Lilita One", sans-serif;
+  font-style: normal;
+}
+
+.selected-ingredients .badge span {
+  font-size: 1.1em;
+  cursor: pointer;
+  margin-left: 0.3em;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.selected-ingredients .badge span:hover {
+  color: black;
+}
+
+/* Radio button specific styles */
+.radio-group label {
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.radio-group input[type="radio"] {
+  width: auto;
+  margin-right: 0.5rem;
 }

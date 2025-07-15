@@ -1,55 +1,171 @@
 <div class="form-card">
-
   <div class="page-title">
     <h2>{{ pageTitle }}</h2>
   </div>
 
   <form [formGroup]="recipeForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
-      <input id="name" placeholder="Recipe Name*" type="text" formControlName="name" />
-      <div class="error" *ngIf="recipeForm.get('name')?.hasError('required') && (recipeForm.get('name')?.touched || recipeForm.get('name')?.dirty)">
+      <input
+        id="name"
+        placeholder="Recipe Name*"
+        type="text"
+        formControlName="name"
+      />
+      <div
+        class="error"
+        *ngIf="
+          recipeForm.get('name')?.hasError('required') &&
+          (recipeForm.get('name')?.touched || recipeForm.get('name')?.dirty)
+        "
+      >
         Name is required
       </div>
     </div>
 
     <div class="form-group">
-      <textarea id="description" placeholder="Description*" formControlName="description"></textarea>
-      <div class="error" *ngIf="recipeForm.get('description')?.hasError('required') && (recipeForm.get('description')?.touched || recipeForm.get('description')?.dirty)">
+      <textarea
+        id="description"
+        placeholder="Description*"
+        formControlName="description"
+      ></textarea>
+      <div
+        class="error"
+        *ngIf="
+          recipeForm.get('description')?.hasError('required') &&
+          (recipeForm.get('description')?.touched ||
+            recipeForm.get('description')?.dirty)
+        "
+      >
         Description is required
       </div>
     </div>
 
+
     <div class="form-group">
-      <textarea id="ingredients" placeholder="Ingredients*" formControlName="ingredients" rows="3"></textarea>
-      <div class="error" *ngIf="recipeForm.get('ingredients')?.hasError('required') && (recipeForm.get('ingredients')?.touched || recipeForm.get('ingredients')?.dirty)">
-        Ingredients are required
+      <label>Ingredients*</label>
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Search or add ingredients"
+        [(ngModel)]="ingredientInput"
+        [ngModelOptions]="{ standalone: true }"
+        (input)="filterIngredients()"
+        (keydown.enter)="
+          addIngredient(ingredientInput); $event.preventDefault()
+        "
+        (focus)="onIngredientInputFocus()"
+        (blur)="onIngredientInputBlur()"
+        id="ingredientInput" />
+
+      <ul class="dropdown-menu show" *ngIf="showDropdown && filteredIngredients.length > 0">
+        <li
+          *ngFor="let ing of filteredIngredients"
+          (mousedown)="selectIngredient(ing)"
+          class="dropdown-item"
+        >
+          {{ ing }}
+        </li>
+      </ul>
+
+      <div class="selected-ingredients mt-2">
+        <span
+          *ngFor="let ing of selectedIngredients"
+          class="badge badge-pill badge-info mr-1"
+        >
+          {{ ing }}
+          <span
+            class="ml-1"
+            style="cursor: pointer"
+            (click)="removeIngredient(ing)"
+            >×</span
+          >
+        </span>
+      </div>
+
+      <div class="error"
+           *ngIf="
+             recipeForm.get('ingredients')?.hasError('required') &&
+             (recipeForm.get('ingredients')?.touched || recipeForm.get('ingredients')?.dirty) &&
+             selectedIngredients.length === 0
+           ">
+        At least one ingredient is required
       </div>
     </div>
 
+
     <div class="form-group">
-      <textarea id="steps" placeholder="Steps*" formControlName="steps" rows="5"></textarea>
-      <div class="error" *ngIf="recipeForm.get('steps')?.hasError('required') && (recipeForm.get('steps')?.touched || recipeForm.get('steps')?.dirty)">
+      <textarea
+        id="steps"
+        placeholder="Steps*"
+        formControlName="steps"
+        rows="5"
+      ></textarea>
+      <div
+        class="error"
+        *ngIf="
+          recipeForm.get('steps')?.hasError('required') &&
+          (recipeForm.get('steps')?.touched || recipeForm.get('steps')?.dirty)
+        "
+      >
         Steps are required
       </div>
     </div>
 
     <div class="form-row">
       <div class="form-group">
-        <input id="calories" placeholder="Calories*" type="number" formControlName="calories" />
-        <div class="error" *ngIf="recipeForm.get('calories')?.hasError('required') && (recipeForm.get('calories')?.touched || recipeForm.get('calories')?.dirty)">
+        <input
+          id="calories"
+          placeholder="Calories*"
+          type="number"
+          formControlName="calories"
+        />
+        <div
+          class="error"
+          *ngIf="
+            recipeForm.get('calories')?.hasError('required') &&
+            (recipeForm.get('calories')?.touched ||
+              recipeForm.get('calories')?.dirty)
+          "
+        >
           Calories is required
         </div>
-        <div class="error" *ngIf="recipeForm.get('calories')?.hasError('min') && (recipeForm.get('calories')?.touched || recipeForm.get('calories')?.dirty)">
+        <div
+          class="error"
+          *ngIf="
+            recipeForm.get('calories')?.hasError('min') &&
+            (recipeForm.get('calories')?.touched ||
+              recipeForm.get('calories')?.dirty)
+          "
+        >
           Must be positive
         </div>
       </div>
 
       <div class="form-group">
-        <input id="protein" placeholder="Protein*" type="number" formControlName="protein" />
-        <div class="error" *ngIf="recipeForm.get('protein')?.hasError('required') && (recipeForm.get('protein')?.touched || recipeForm.get('protein')?.dirty)">
+        <input
+          id="protein"
+          placeholder="Protein*"
+          type="number"
+          formControlName="protein"
+        />
+        <div
+          class="error"
+          *ngIf="
+            recipeForm.get('protein')?.hasError('required') &&
+            (recipeForm.get('protein')?.touched ||
+              recipeForm.get('protein')?.dirty)
+          "
+        >
           Protein is required
         </div>
-        <div class="error" *ngIf="recipeForm.get('protein')?.hasError('min') && (recipeForm.get('protein')?.touched || recipeForm.get('protein')?.dirty)">
+        <div
+          class="error"
+          *ngIf="
+            recipeForm.get('protein')?.hasError('min') &&
+            (recipeForm.get('protein')?.touched ||
+              recipeForm.get('protein')?.dirty)
+          "
+        >
           Must be positive
         </div>
       </div>
@@ -58,14 +174,30 @@
     <div class="form-group radio-group">
       <label>Recipe Type*</label>
       <div>
-        <input type="radio" id="vegetarian" value="Vegetarian" formControlName="type" />
+        <input
+          type="radio"
+          id="vegetarian"
+          value="Vegetarian"
+          formControlName="type"
+        />
         <label for="vegetarian">Vegetarian</label>
       </div>
       <div>
-        <input type="radio" id="nonVegetarian" value="Non-Vegetarian" formControlName="type" />
+        <input
+          type="radio"
+          id="nonVegetarian"
+          value="Non-Vegetarian"
+          formControlName="type"
+        />
         <label for="nonVegetarian">Non-Vegetarian</label>
       </div>
-      <div class="error" *ngIf="recipeForm.get('type')?.hasError('required') && (recipeForm.get('type')?.touched || recipeForm.get('type')?.dirty)">
+      <div
+        class="error"
+        *ngIf="
+          recipeForm.get('type')?.hasError('required') &&
+          (recipeForm.get('type')?.touched || recipeForm.get('type')?.dirty)
+        "
+      >
         Recipe type is required
       </div>
     </div>
@@ -78,15 +210,21 @@
     </div>
 
     <div class="form-group">
-
-      <input id="allergyInfo" placeholder="Allergy Info" type="text" formControlName="allergyInfo" />
+      <input
+        id="allergyInfo"
+        placeholder="Allergy Info"
+        type="text"
+        formControlName="allergyInfo"
+      />
     </div>
 
     <div class="form-actions">
       <button type="submit" [disabled]="recipeForm.invalid">
-        {{ isEditMode ? 'Update Recipe' : 'Create Recipe' }}
+        {{ isEditMode ? "Update Recipe" : "Create Recipe" }}
       </button>
-      <button type="button" (click)="router.navigate(['/recipes'])">Cancel</button>
+      <button type="button" (click)="router.navigate(['/recipes'])">
+        Cancel
+      </button>
     </div>
   </form>
 </div>

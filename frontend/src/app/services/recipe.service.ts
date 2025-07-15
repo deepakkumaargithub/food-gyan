@@ -56,4 +56,12 @@ export class RecipeService {
   deleteRecipe(id: string): Observable<any> {
     return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
+
+  // added 2025-07-14: get all available ingredients
+  getAllIngredients(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/ingredients`);
+  }
+  seedIngredients(): Observable<any> {
+    return this.http.post<any>('http://localhost:3000/api/recipes/seed-ingredients', {});
+  }
 }

@@ -146,3 +146,31 @@ exports.browseAllRecipes = async (req, res) => {
         await session.close();
     }
 };
+
+// This function needs to be exported
+exports.getAllIngredients = async (req, res) => {
+  const session = getSession(); // Assuming getSession is imported and available
+  try {
+    const ingredients = await recipeModel.getAllIngredients(session); // Assuming recipeModel is imported
+    res.json(ingredients);
+  } catch (error) {
+    console.error('Get Ingredients Error:', error.message);
+    res.status(500).send('Server Error');
+  } finally {
+    await session.close();
+  }
+};
+
+// added 2025-07-14
+exports.seedIngredients = async (req, res) => {
+  const session = getSession();
+  try {
+    const count = await recipeModel.seedTopIngredients(session);
+    res.status(200).json({ message: `${count} ingredients seeded.` });
+  } catch (error) {
+    console.error('Seed Ingredients Error:', error);
+    res.status(500).send('Failed to seed ingredients');
+  } finally {
+    await session.close();
+  }
+};

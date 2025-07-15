@@ -2,36 +2,104 @@
   <div class="list-header">
     <h1 *ngIf="!isDiscoverRecipesPage">My Recipes</h1>
     <h1 *ngIf="isDiscoverRecipesPage">Discover Recipes</h1>
+    <div class="filter-controls">
+      <button
+        [class.active-filter]="currentFilter === 'All'"
+        (click)="filterRecipes('All')"
+      >
+        All
+      </button>
+      <button
+        [class.active-filter]="currentFilter === 'Vegetarian'"
+        (click)="filterRecipes('Vegetarian')"
+      >
+        Vegetarian
+      </button>
+      <button
+        [class.active-filter]="currentFilter === 'Non-Vegetarian'"
+        (click)="filterRecipes('Non-Vegetarian')"
+      >
+        Non-Vegetarian
+      </button>
+    </div>
   </div>
 
   <div *ngIf="recipes.length === 0" class="no-recipes">
     <div class="no-recipes-icon">🍜</div>
     <h2 *ngIf="!isDiscoverRecipesPage">No recipes found.</h2>
     <h2 *ngIf="isDiscoverRecipesPage">No recipes to discover.</h2>
-    <p *ngIf="!isDiscoverRecipesPage">Get started by adding your first recipe!</p>
+    <p *ngIf="!isDiscoverRecipesPage">
+      Get started by adding your first recipe!
+    </p>
   </div>
 
   <div *ngIf="recipes.length > 0" class="recipe-grid">
-    <div *ngFor="let recipe of recipes" class="recipe-card">
+    <div
+      *ngFor="let recipe of recipes"
+      class="recipe-card"
+      (click)="viewRecipeDetails(recipe)"
+    >
       <div class="card-header">
-        <h3 class="recipe-title" >{{ recipe.name.toUpperCase() }}</h3>
-        <p class="subtitle">Calories: {{ recipe.calories }} | Protein: {{ recipe.protein }}g</p>
+        <h3 class="recipe-title">{{ recipe.name.toUpperCase() }}</h3>
+        <img
+          *ngIf="recipe.type === 'Vegetarian'"
+          src="assets/images/veg-icon.png"
+          width="22px"
+          height="22px"
+          alt="Veg Icon"
+          class="diet-icon"
+        />
+        <img
+          *ngIf="recipe.type === 'Non-Vegetarian'"
+          src="assets/images/non-veg-icon.png"
+          width="22px"
+          height="22px"
+          alt="Non-Veg Icon"
+          class="diet-icon"
+        />
+        <p class="subtitle">
+          Calories: {{ recipe.calories }} | Protein: {{ recipe.protein }}g
+        </p>
       </div>
-      <div class="card-content">
-        <p class="description">Description: {{ recipe.description }}</p>
-        <p> Ingredients: {{ recipe.ingredients }}</p>
-        <p>Steps:{{ recipe.steps }}</p>
-        <p *ngIf="recipe.allergyInfo"><strong>Allergy Info:</strong> {{ recipe.allergyInfo }}</p>
-      </div>
-      <div class="card-actions" *ngIf="isRecipeOwner(recipe) && !isDiscoverRecipesPage">
-        <button class="icon-button" (click)="editRecipe(recipe.id)" title="Edit Recipe">
-  <img src="assets/images/edit.png" width="20" height="20" />
-</button>
 
-        <button class="icon-button" (click)="deleteRecipe(recipe.id)" title="Delete Recipe">
-          <img src="assets/images/del.png" width="20" height="20" />
+      <div class="card-actions">
+        <button
+          class="icon-button view-details-btn"
+          (click)="viewRecipeDetails(recipe); $event.stopPropagation()"
+          title="View Full Details"
+        >
+          <span class="see-complete-recipe-btn">
+            see complete recipe
+            <span class="see-complete-recipe-logo">
+              <img src="assets/images/chef.png" />
+            </span>
+          </span>
         </button>
+
+        <ng-container *ngIf="isRecipeOwner(recipe) && !isDiscoverRecipesPage">
+          <button
+            class="icon-button"
+            (click)="editRecipe(recipe.id); $event.stopPropagation()"
+            title="Edit Recipe"
+          >
+            <img src="assets/images/edit.png" width="20" height="20" />
+          </button>
+
+          <button
+            class="icon-button"
+            (click)="deleteRecipe(recipe.id); $event.stopPropagation()"
+            title="Delete Recipe"
+          >
+            <img src="assets/images/del.png" width="20" height="20" />
+          </button>
+        </ng-container>
       </div>
     </div>
   </div>
+
+  <app-recipe-detail-modal
+    *ngIf="selectedRecipe"
+    [recipe]="selectedRecipe"
+    (close)="closeModal()"
+  ></app-recipe-detail-modal>
 </div>

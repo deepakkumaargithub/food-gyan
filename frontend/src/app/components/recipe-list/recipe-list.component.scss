@@ -98,5 +98,86 @@
 }
 
 .icon-button:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
+
+.view-details-btn {
+  background-color: black;
+  color: yellow;
+  padding: 4px 12px;
+  border: none;
+  font-size: 0.9rem;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+
+  .see-complete-recipe-btn {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    color: #FF921C;
+  }
+
+  .see-complete-recipe-logo {
+    background-color: #FF921C;
+    border-radius: 50%;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  img {
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+  }
+}
+
+
+ .filter-controls {
+    margin-top: 15px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  .filter-controls button {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    font-size: 1em;
+    font-family: "Lilita One", sans-serif;
+    transition: all 0.2s ease-in-out;
+  }
+  .filter-controls button:hover {
+    background-color: #e0e0e0;
+  }
+  .filter-controls button.active-filter {
+    background-color: #FF921C; /* Primary color */
+    color: black;
+    font-weight: bold;
+    border: none;
+  }
+  .recipe-type { /* Added for the recipe type display */
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+  }
+
+  .title-with-icon {
+  display: flex;
+  align-items: baseline;
+
+}
+
+.diet-icon {
+  margin-left: 5px;
+}
+
+

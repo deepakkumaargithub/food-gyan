@@ -1,0 +1,30 @@
+<div class="modal-wrapper" (click)="onBackdropClick($event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">{{ recipe.name.toUpperCase() }}</h2>
+      <button class="close-button" (click)="closeModal()">✖</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-section">
+        <h3>Description</h3>
+        <p class="block-text">{{ recipe.description }}</p>
+      </div>
+
+      <div class="modal-section">
+        <h3>Ingredients</h3>
+        <p class="block-text">{{ recipe.ingredients }}</p>
+      </div>
+
+      <div class="modal-section">
+        <h3>Steps</h3>
+        <p class="block-text">{{ recipe.steps }}</p>
+      </div>
+
+      <div class="modal-section" *ngIf="recipe.allergyInfo">
+        <h3>Allergy Info</h3>
+        <p class="block-text">{{ recipe.allergyInfo }}</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -55,6 +55,21 @@
       </div>
     </div>
 
+    <div class="form-group radio-group">
+      <label>Recipe Type*</label>
+      <div>
+        <input type="radio" id="vegetarian" value="Vegetarian" formControlName="type" />
+        <label for="vegetarian">Vegetarian</label>
+      </div>
+      <div>
+        <input type="radio" id="nonVegetarian" value="Non-Vegetarian" formControlName="type" />
+        <label for="nonVegetarian">Non-Vegetarian</label>
+      </div>
+      <div class="error" *ngIf="recipeForm.get('type')?.hasError('required') && (recipeForm.get('type')?.touched || recipeForm.get('type')?.dirty)">
+        Recipe type is required
+      </div>
+    </div>
+
     <div class="form-group checkbox-group">
       <label>
         <input type="checkbox" formControlName="private" />

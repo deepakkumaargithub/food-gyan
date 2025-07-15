@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RecipeService } from '../../services/recipe.service';
 
@@ -32,6 +32,7 @@ export class RecipeFormComponent implements OnInit {
       calories: ['', [Validators.required, Validators.min(0)]],
       protein: ['', [Validators.required, Validators.min(0)]],
       private: [''],
+      type: ['', Validators.required],
       allergyInfo: [''],
     });
   }

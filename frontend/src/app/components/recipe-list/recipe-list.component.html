@@ -1,7 +1,9 @@
 <div class="list-container">
   <div class="list-header">
-    <h1 *ngIf="!isDiscoverRecipesPage">My Recipes</h1>
+    <h1 *ngIf="!isDiscoverRecipesPage && !isFavouritesPage">My Recipes</h1>
     <h1 *ngIf="isDiscoverRecipesPage">Discover Recipes</h1>
+    <h1 *ngIf="isFavouritesPage">Favourite Recipes</h1>
+
     <div class="filter-controls">
       <button
         [class.active-filter]="currentFilter === 'All'"
@@ -24,15 +26,22 @@
     </div>
   </div>
 
+  <!-- No Recipes Message -->
   <div *ngIf="recipes.length === 0" class="no-recipes">
     <div class="no-recipes-icon">🍜</div>
-    <h2 *ngIf="!isDiscoverRecipesPage">No recipes found.</h2>
+    <h2 *ngIf="!isDiscoverRecipesPage && !isFavouritesPage">No recipes found.</h2>
     <h2 *ngIf="isDiscoverRecipesPage">No recipes to discover.</h2>
-    <p *ngIf="!isDiscoverRecipesPage">
+    <h2 *ngIf="isFavouritesPage">No favourites yet.</h2>
+
+    <p *ngIf="!isDiscoverRecipesPage && !isFavouritesPage">
       Get started by adding your first recipe!
+    </p>
+    <p *ngIf="isFavouritesPage">
+      Start liking some recipes to see them here.
     </p>
   </div>
 
+  <!-- Recipe Cards -->
   <div *ngIf="recipes.length > 0" class="recipe-grid">
     <div
       *ngFor="let recipe of recipes"
@@ -63,6 +72,7 @@
       </div>
 
       <div class="card-actions">
+        <!-- View Full Recipe -->
         <button
           class="icon-button view-details-btn"
           (click)="viewRecipeDetails(recipe); $event.stopPropagation()"
@@ -74,9 +84,10 @@
               <img src="assets/images/chef.png" />
             </span>
           </span>
-
         </button>
-         <button
+
+        <!-- Like/Unlike -->
+        <button
           class="icon-button"
           (click)="toggleLike(recipe); $event.stopPropagation()"
           title="Like Recipe"
@@ -89,6 +100,7 @@
           />
         </button>
 
+        <!-- Edit/Delete for Owners -->
         <ng-container *ngIf="isRecipeOwner(recipe) && !isDiscoverRecipesPage">
           <button
             class="icon-button"
@@ -110,6 +122,7 @@
     </div>
   </div>
 
+  <!-- Recipe Modal -->
   <app-recipe-detail-modal
     *ngIf="selectedRecipe"
     [recipe]="selectedRecipe"

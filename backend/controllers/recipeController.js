@@ -1,5 +1,5 @@
 const { validationResult } = require('express-validator');
-const { getSession } = require('../config/db'); // Assuming getSession manages session opening/closing
+const { getSession } = require('../config/db'); 
 const recipeModel = require('../models/recipeModel');
 
 
@@ -45,9 +45,9 @@ exports.getAllUserRecipes = async (req, res) => {
     const session = getSession();
     try {
         const userId = req.user.id;
-        // NEW: Extract 'type' query parameter from the request
+        
         const typeFilter = req.query.type; 
-        // CHANGED: Pass the typeFilter to recipeModel.findAllByUserId
+       
         const recipes = await recipeModel.findAllByUserId(session, userId, typeFilter);
         res.json(recipes);
     } catch (error) {
@@ -63,7 +63,7 @@ exports.getRecipeById = async (req, res) => {
     try {
         const recipeId = req.params.id;
         const userId = req.user.id;
-        // Note: recipeModel.findByIdAndUser is already updated to return 'type' in formatRecipe
+
         const recipe = await recipeModel.findByIdAndUser(session, recipeId, userId);
         if (!recipe) {
             return res.status(404).json({ msg: 'Recipe not found or you do not have permission to view it' });
@@ -89,7 +89,6 @@ exports.updateRecipe = async (req, res) => {
         const userId = req.user.id;
         const recipeData = { ...req.body };
 
-        // Note: The recipeModel.update function now includes server-side validation for 'type'.
         const updatedRecipe = await recipeModel.update(session, recipeId, recipeData, userId);
         
         if (!updatedRecipe) {
@@ -98,7 +97,6 @@ exports.updateRecipe = async (req, res) => {
         res.json(updatedRecipe);
     } catch (error) {
         console.error('Update Recipe Error:', error.message);
-        // NEW: Handle specific validation error from model
         if (error.message.includes('Invalid recipe type')) {
             return res.status(400).json({ msg: error.message });
         }
@@ -134,10 +132,11 @@ exports.deleteRecipe = async (req, res) => {
 exports.browseAllRecipes = async (req, res) => {
     const session = getSession();
     try {
-        // NEW: Extract 'type' query parameter from the request
+        
         const typeFilter = req.query.type;
-        // CHANGED: Pass the typeFilter to recipeModel.findAll
-        const recipes = await recipeModel.findAll(session, typeFilter);
+        const userId = req.user.id;
+       
+        const recipes = await recipeModel.findAll(session, typeFilter, userId);
         res.json(recipes);
     } catch (error) {
         console.error('Browse All Recipes Error:', error.message);
@@ -161,7 +160,7 @@ exports.getAllIngredients = async (req, res) => {
   }
 };
 
-// added 2025-07-14
+// seeded top 10 ingredients
 exports.seedIngredients = async (req, res) => {
   const session = getSession();
   try {
@@ -174,3 +173,36 @@ exports.seedIngredients = async (req, res) => {
     await session.close();
   }
 };
+
+exports.toggleLike = async (req, res) => {
+  const session = getSession();
+  try {
+    const { recipeId } = req.body;
+    const userId = req.user.id;
+
+    const result = await recipeModel.toggleLike(session, userId, recipeId);
+    res.json(result);
+  } catch (error) {
+    console.error('Toggle Like Error:', error.message);
+    res.status(500).send('Failed to toggle like');
+  } finally {
+    await session.close();
+  }
+};
+
+exports.getFavouriteRecipes = async (req, res) => {
+  const session = getSession();
+  try {
+    const userId = req.user.id;
+    const typeFilter = req.query.type;
+
+    const recipes = await recipeModel.getLikedRecipesByUser(session, userId, typeFilter);
+    res.json(recipes);
+  } catch (error) {
+    console.error('Get Favourites Error:', error.message);
+    res.status(500).send('Failed to load favourites');
+  } finally {
+    await session.close();
+  }
+};
+

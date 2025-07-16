@@ -9,7 +9,7 @@ import { RecipeService } from '../../services/recipe.service';
   selector: 'app-recipe-form',
   standalone: true,
   templateUrl: './recipe-form.component.html',
-  styleUrls: ['./recipe-form.component.scss'], // ✅ Make sure this points to your SCSS file
+  styleUrls: ['./recipe-form.component.scss'], 
   imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule],
 })
 export class RecipeFormComponent implements OnInit {

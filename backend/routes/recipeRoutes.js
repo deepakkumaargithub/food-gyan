@@ -9,7 +9,9 @@ const {
   deleteRecipe,
   browseAllRecipes,
   seedIngredients,
-  getAllIngredients // ✅ THIS MUST BE PRESENT AND SPELLED CORRECTLY
+  getAllIngredients,
+  toggleLike,
+  getFavouriteRecipes
 } = require('../controllers/recipeController');
 
 const router = express.Router();
@@ -32,10 +34,12 @@ router.get('/', authMiddleware, getAllUserRecipes);
 // GET all public recipes
 router.get('/all', authMiddleware, browseAllRecipes);
 
-// ✅ seed ingredients
+// seed ingredients
 router.post('/seed-ingredients', seedIngredients);
 
-// ✅ get all ingredients (before /:id)
+router.get('/favourites', authMiddleware, getFavouriteRecipes);
+
+// get all ingredients (before /:id)
 router.get('/ingredients', getAllIngredients);
 
 // GET recipe by ID (always LAST of GET routes)
@@ -43,6 +47,8 @@ router.get('/:id', authMiddleware, getRecipeById);
 
 // PUT update recipe
 router.put('/:id', [authMiddleware, recipeValidation], updateRecipe);
+
+router.post('/toggle-like', authMiddleware, toggleLike);
 
 // DELETE recipe
 router.delete('/:id', authMiddleware, deleteRecipe);

@@ -22,11 +22,12 @@ export class RecipeListComponent implements OnInit {
   recipes: any[] = [];
   currentUserId: string | null = null;
   isDiscoverRecipesPage: boolean = false;
+  isFavouritesPage: boolean= false;
+
 
   selectedRecipe: any = null;
 
-  // NEW: Property to track the currently active filter
-  currentFilter: string = 'All'; // Default filter: show all recipes
+  currentFilter: string = 'All';
 
   constructor(
     private recipeService: RecipeService,
@@ -36,55 +37,64 @@ export class RecipeListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.currentUserId = this.authService.getCurrentUserId();
+  this.currentUserId = this.authService.getCurrentUserId();
 
-    this.route.url.subscribe(segments => {
-      this.isDiscoverRecipesPage = segments.some(s => s.path === 'discover');
-      // MODIFIED: Call loadRecipes without arguments, it will now use this.currentFilter
-      this.loadRecipes();
-    });
-  }
+  this.route.url.subscribe(segments => {
+    const pathSegments = segments.map(s => s.path);
 
-  // MODIFIED: loadRecipes no longer takes an argument; it uses this.currentFilter
+    this.isDiscoverRecipesPage = pathSegments.includes('discover');
+    this.isFavouritesPage = pathSegments.includes('favourites');
+
+    this.loadRecipes();
+  });
+}
+
+
+
   loadRecipes(): void {
-    let recipesObservable: Observable<any[]>;
+  let recipesObservable: Observable<any[]>;
 
-    if (this.isDiscoverRecipesPage) {
-      // MODIFIED: Pass currentFilter to getAllPublicRecipes
-      recipesObservable = this.recipeService.getAllPublicRecipes(this.currentFilter);
+  if (this.isDiscoverRecipesPage) {
+
+    recipesObservable = this.recipeService.getAllPublicRecipes(this.currentFilter);
+
+  } else if (this.isFavouritesPage) {
+
+    recipesObservable = this.recipeService.getFavourites(this.currentFilter);
+
+  } else {
+
+    if (this.currentUserId) {
+      recipesObservable = this.recipeService.getRecipes(this.currentUserId, this.currentFilter);
     } else {
-      // MODIFIED: Pass currentUserId and currentFilter to getRecipes (for user's own recipes)
-      if (this.currentUserId) { // Ensure currentUserId is available for 'My Recipes'
-        recipesObservable = this.recipeService.getRecipes(this.currentUserId, this.currentFilter);
-      } else {
-        // If no user ID for 'My Recipes', clear recipes and return
-        this.recipes = [];
-        return;
-      }
+      this.recipes = [];
+      return;
     }
-
-    recipesObservable.subscribe({
-      next: (data: any[]) => {
-        this.recipes = data;
-      },
-      error: (err: any) => {
-        console.error('Failed to load recipes:', err);
-        Swal.fire({
-          title: 'Opps!',
-          text: 'Failed to load recipes',
-          icon: 'error',
-          showCancelButton: true,
-          confirmButtonColor: '#FF921C',
-          cancelButtonText: 'Cancel'
-        });
-      }
-    });
   }
 
-  // NEW: Method to handle filter button clicks
+  recipesObservable.subscribe({
+    next: (data: any[]) => {
+      this.recipes = data;
+    },
+    error: (err: any) => {
+      console.error('Failed to load recipes:', err);
+      Swal.fire({
+        title: 'Oops!',
+        text: 'Failed to load recipes',
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#FF921C',
+        cancelButtonText: 'Cancel'
+      });
+    }
+  });
+}
+
+
+
   filterRecipes(filterType: string): void {
-    this.currentFilter = filterType; // Update the filter state
-    this.loadRecipes(); // Reload recipes with the new filter applied
+    this.currentFilter = filterType;
+    this.loadRecipes();
   }
 
   isRecipeOwner(recipe: any): boolean {
@@ -110,7 +120,7 @@ export class RecipeListComponent implements OnInit {
         this.recipeService.deleteRecipe(id).subscribe({
           next: () => {
             Swal.fire('Deleted!', 'Recipe deleted successfully.', 'success');
-            // MODIFIED: Reload recipes using the current filter after deletion
+
             this.loadRecipes();
           },
           error: (err: any) => {
@@ -131,4 +141,16 @@ export class RecipeListComponent implements OnInit {
   closeModal(): void {
     this.selectedRecipe = null;
   }
+
+  toggleLike(recipe: any) {
+  this.recipeService.toggleLike(recipe.id).subscribe({
+    next: (res: any) => {
+      recipe.liked = res.liked;
+    },
+    error: () => {
+      alert('Error liking recipe');
+    }
+  });
+}
+
 }

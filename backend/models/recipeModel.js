@@ -7,35 +7,37 @@ const formatRecipe = (record) => {
 
     recipe.calories = Number(recipe.calories);
     recipe.protein = Number(recipe.protein);
-    // NEW: Ensure 'private' property is a boolean from Neo4j's representation
     recipe.private = Boolean(recipe.private); 
     
     if (record.has('creatorId')) {
         recipe.creatorId = record.get('creatorId');
     }
-    // Add dietaryType if present in the record (from the HAS_TYPE relationship)
-    // This assumes the Cypher query returns 'd.name AS typeName'
+    // check and add
     if (record.has('typeName')) {
         recipe.type = record.get('typeName');
     }
 
-    // NEW: Add ingredients if present in the record (from the HAS_INGREDIENT relationship)
-    // This assumes the Cypher query returns 'collect(i.name) AS ingredients'
+   // check add add
     if (record.has('ingredients')) {
         recipe.ingredients = record.get('ingredients');
     } else {
-        recipe.ingredients = []; // Ensure it's always an array, even if empty
+        recipe.ingredients = [];
     }
+
+    if (record.has('liked')) {
+      recipe.liked = record.get('liked');
+    } else {
+      recipe.liked = false;
+    }
+
 
     return recipe;
 };
 
-// NEW FUNCTION: To get all dietary types (e.g., "Vegetarian", "Non-Vegetarian")
 exports.getAllDietaryTypes = async (session) => {
     const result = await session.run(
         `
         MATCH (d:DietaryType)
-        // Optionally, filter if you only want specific types like "Vegetarian" and "Non-Vegetarian"
         WHERE d.name IN ["Vegetarian", "Non-Vegetarian"] 
         RETURN d.name AS name
         ORDER BY d.name
@@ -44,8 +46,6 @@ exports.getAllDietaryTypes = async (session) => {
     return result.records.map(record => record.toObject());
 };
 
-// added 2025-07-14
-// NEW FUNCTION: To fetch all available ingredient names from Neo4j
 exports.getAllIngredients = async (session) => {
   const result = await session.run(`
     MATCH (i:Ingredient)
@@ -93,15 +93,15 @@ exports.create = async (session, recipeData, userId) => {
     throw new Error("Failed to create recipe. User might not exist or another issue occurred.");
   }
 
-  // added 2025-07-14: create HAS_INGREDIENT relationships after recipe node creation
+  // create HAS_INGREDIENT relationships after recipe node creation
   if (ingredients && ingredients.length > 0) {
     for (const ing of ingredients) {
       await session.run(
         `
-        MERGE (i:Ingredient {name: $ing}) // Ensure ingredient node exists
+        MERGE (i:Ingredient {name: $ing}) 
         WITH i
         MATCH (r:Recipe {id: $recipeId})
-        MERGE (r)-[:HAS_INGREDIENT]->(i) // Create relationship
+        MERGE (r)-[:HAS_INGREDIENT]->(i) 
         `,
         { recipeId, ing }
       );
@@ -117,18 +117,19 @@ exports.findAllByUserId = async (session, userId, typeFilter = null) => {
   let query = `
     MATCH (u:User {id: $userId})-[:CREATED]->(r:Recipe)
     OPTIONAL MATCH (r)-[:HAS_TYPE]->(d:DietaryType)
-    OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient) // NEW: Match ingredients
+    OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient)
+    OPTIONAL MATCH (u)-[l:LIKED]->(r)
   `;
 
   if (typeFilter && typeFilter !== 'All') {
     query += `
-      WITH r, u, d, i // Ensure 'i' is carried forward
+      WITH r, u, d, i, l
       WHERE d.name = $typeFilter
     `;
   }
 
   query += `
-    RETURN r, u.id AS creatorId, d.name AS typeName, collect(i.name) AS ingredients // NEW: Collect ingredient names
+    RETURN r, u.id AS creatorId, d.name AS typeName, collect(i.name) AS ingredients, l IS NOT NULL AS liked
     ORDER BY r.createdAt DESC
   `;
 
@@ -137,9 +138,7 @@ exports.findAllByUserId = async (session, userId, typeFilter = null) => {
 };
 
 
-
-
-exports.findAll = async (session, typeFilter = null) => {
+exports.findAll = async (session, typeFilter = null, userId = null) => {
   let query = `
     MATCH (u:User)-[:CREATED]->(r:Recipe)
     WHERE r.private = false
@@ -147,27 +146,33 @@ exports.findAll = async (session, typeFilter = null) => {
     OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient)
   `;
 
-  // Conditionally add type filter via WITH + WHERE
+  if (userId) {
+    query += `
+      OPTIONAL MATCH (u2:User {id: $userId})-[l:LIKED]->(r)
+    `;
+  }
+
   if (typeFilter && typeFilter !== 'All') {
     query += `
-      WITH r, u, d, i
+      WITH r, u, d, i${userId ? ', l' : ''}
       WHERE d.name = $typeFilter
     `;
   } else {
-    // If no typeFilter, still pass variables through WITH for consistent scoping
     query += `
-      WITH r, u, d, i
+      WITH r, u, d, i${userId ? ', l' : ''}
     `;
   }
 
   query += `
     RETURN r, u.id AS creatorId, d.name AS typeName, collect(i.name) AS ingredients
+    ${userId ? ', l IS NOT NULL AS liked' : ''}
     ORDER BY r.createdAt DESC
   `;
 
-  const result = await session.run(query, { typeFilter });
+  const result = await session.run(query, { typeFilter, userId });
   return result.records.map(formatRecipe);
 };
+
 
 
 
@@ -176,8 +181,8 @@ exports.findByIdAndUser = async (session, recipeId, userId) => {
         `
         MATCH (u:User {id: $userId})-[:CREATED]->(r:Recipe {id: $recipeId})
         OPTIONAL MATCH (r)-[:HAS_TYPE]->(d:DietaryType)
-        OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient) // NEW: Match ingredients
-        RETURN r, d.name AS typeName, collect(i.name) AS ingredients // NEW: Collect ingredient names
+        OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient) 
+        RETURN r, d.name AS typeName, collect(i.name) AS ingredients 
         `,
         { userId, recipeId }
     );
@@ -190,16 +195,14 @@ exports.findRecipeByNameAndUser = async (session, name, userId) => {
         `
         MATCH (u:User {id: $userId})-[:CREATED]->(r:Recipe {name: $name})
         OPTIONAL MATCH (r)-[:HAS_TYPE]->(d:DietaryType)
-        OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient) // NEW: Match ingredients
-        RETURN r, d.name AS typeName, collect(i.name) AS ingredients // NEW: Collect ingredient names
+        OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient) 
+        RETURN r, d.name AS typeName, collect(i.name) AS ingredients
         `,
         { name, userId }
     );
     if (result.records.length === 0) return null;
     return formatRecipe(result.records[0]);
 };
-
-
 
 
 
@@ -234,9 +237,9 @@ exports.update = async (session, recipeId, recipeData, userId) => {
     { userId, recipeId, name, description, steps, calories, protein, allergyInfo, isPrivate, type }
   );
 
-  // Problem 1 Fix: Only proceed with ingredient updates if the recipe was successfully found and updated
+  // Only proceed with ingredient updates if the recipe was successfully found and updated
   if (updateResult.records.length === 0) {
-      return null; // Recipe not found or user not authorized to update
+      return null; 
   }
 
   // Step 2: Delete existing HAS_INGREDIENT relationships
@@ -264,7 +267,6 @@ exports.update = async (session, recipeId, recipeData, userId) => {
   }
 
   // Fetch the fully updated recipe with its new ingredients to return
-  // This ensures the client gets the most up-to-date representation.
   const finalRecipeResult = await session.run(
     `
     MATCH (r:Recipe {id: $recipeId})
@@ -292,7 +294,7 @@ exports.deleteById = async (session, recipeId, userId) => {
     return result.records[0].get('deletedCount');
 };
 
-// added 2025-07-14
+
 exports.seedTopIngredients = async (session) => {
   const ingredients = [
     'Salt',
@@ -315,3 +317,56 @@ exports.seedTopIngredients = async (session) => {
 
   return ingredients.length;
 };
+
+// [LIKE FEATURE] Toggle like/unlike relationship
+exports.toggleLike = async (session, userId, recipeId) => {
+  const checkResult = await session.run(`
+    MATCH (u:User {id: $userId})-[like:LIKED]->(r:Recipe {id: $recipeId})
+    RETURN like
+  `, { userId, recipeId });
+
+  if (checkResult.records.length > 0) {
+    // Unlike
+    await session.run(`
+      MATCH (u:User {id: $userId})-[like:LIKED]->(r:Recipe {id: $recipeId})
+      DELETE like
+    `, { userId, recipeId });
+    return { liked: false };
+  } else {
+    // Like
+    await session.run(`
+      MATCH (u:User {id: $userId}), (r:Recipe {id: $recipeId})
+      MERGE (u)-[:LIKED]->(r)
+    `, { userId, recipeId });
+    return { liked: true };
+  }
+};
+
+exports.getLikedRecipesByUser = async (session, userId, typeFilter = null) => {
+  let query = `
+    MATCH (u:User {id: $userId})-[:LIKED]->(r:Recipe)
+    OPTIONAL MATCH (r)-[:HAS_TYPE]->(d:DietaryType)
+    OPTIONAL MATCH (r)-[:HAS_INGREDIENT]->(i:Ingredient)
+  `;
+
+  if (typeFilter && typeFilter !== 'All') {
+    query += `
+      WITH r, u, d, i
+      WHERE d.name = $typeFilter
+    `;
+  } else {
+    query += `
+      WITH r, u, d, i
+    `;
+  }
+
+  query += `
+    RETURN r, u.id AS creatorId, d.name AS typeName, collect(i.name) AS ingredients, true AS liked
+    ORDER BY r.createdAt DESC
+  `;
+
+  const result = await session.run(query, { userId, typeFilter });
+  return result.records.map(formatRecipe);
+};
+
+

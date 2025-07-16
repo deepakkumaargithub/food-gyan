@@ -1,5 +1,3 @@
-/* --- Recipe Form Component SCSS --- */
-
 .form-card {
   margin: 40px auto;
   max-width: 450px;
@@ -30,7 +28,7 @@ form .form-group {
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  position: relative; /* ✅ CRITICAL: For dropdown positioning */
+  position: relative;
 }
 
 form .form-group input,
@@ -44,28 +42,27 @@ form .form-group textarea {
   font-weight: lighter;
 }
 
-/* ✅ NEW/UPDATED: Styles for the ingredient dropdown menu */
 .dropdown-menu {
-  position: absolute; /* ✅ Positions the dropdown relative to its parent .form-group */
-  top: 100%; /* ✅ Places it directly below the input field */
+  position: absolute;
+  top: 100%;
   left: 0;
   right: 0;
-  z-index: 1000; /* ✅ Ensures it appears above other content */
+  z-index: 1000;
   float: left;
-  min-width: 100%; /* Makes it as wide as the input */
+  min-width: 100%;
   padding: 0.5rem 0;
   margin: 0.125rem 0 0;
   font-size: 1rem;
   color: #212529;
   text-align: left;
-  list-style: none; /* Removes bullet points */
+  list-style: none;
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 0.25rem;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
-  max-height: 200px; /* ✅ NEW: Limit height */
-  overflow-y: auto; /* ✅ NEW: Add scroll if content overflows */
+  max-height: 200px;
+  overflow-y: auto;
 }
 
 .dropdown-item {
@@ -88,7 +85,7 @@ form .form-group textarea {
   text-decoration: none;
   background-color: #f8f9fa;
 }
-/* END NEW/UPDATED: Styles for the ingredient dropdown menu */
+
 
 
 form .form-row {
@@ -145,13 +142,13 @@ form .form-actions button:disabled {
 .selected-ingredients .badge {
   display: inline-flex;
   align-items: center;
-  background-color: #FF921C; /* Use your theme color */
+  background-color: #FF921C;
   color: black;
   padding: 0.4em 0.6em;
   border-radius: 0.25rem;
   font-size: 0.85em;
   margin-right: 0.5em;
-  margin-bottom: 0.5em; /* Ensure vertical spacing */
+  margin-bottom: 0.5em;
   font-family: "Lilita One", sans-serif;
   font-style: normal;
 }
@@ -167,7 +164,7 @@ form .form-actions button:disabled {
   color: black;
 }
 
-/* Radio button specific styles */
+
 .radio-group label {
   font-size: 1rem;
   margin-left: 0.5rem;

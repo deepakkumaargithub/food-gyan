@@ -26,4 +26,7 @@ export class AppComponent {
   navigateToDiscoverRecipes(): void {
     this.router.navigate(['/recipes/discover']);
   }
+  navigateToFavouriteRecipes(): void {
+    this.router.navigate(['/recipes/favourites']);
+  }
 }

@@ -74,6 +74,19 @@
               <img src="assets/images/chef.png" />
             </span>
           </span>
+
+        </button>
+         <button
+          class="icon-button"
+          (click)="toggleLike(recipe); $event.stopPropagation()"
+          title="Like Recipe"
+        >
+          <img
+            [src]="recipe.liked ? 'assets/images/filled-like.png' : 'assets/images/outline-like.png'"
+            width="30"
+            height="25"
+            alt="Like Icon"
+          />
         </button>
 
         <ng-container *ngIf="isRecipeOwner(recipe) && !isDiscoverRecipesPage">

@@ -15,6 +15,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'recipes/favourites',
+    component: RecipeListComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'recipes/new',
     component: RecipeFormComponent,
     canActivate: [AuthGuard],

@@ -10,7 +10,9 @@
     <nav class="nav-links">
       <a routerLink="/recipes" class="custom-btn">MY RECIPES </a>
       <a (click)="navigateToDiscoverRecipes()" class="custom-btn">DISCOVER RECIPES</a>
+      <a (click)="navigateToFavouriteRecipes()" class="custom-btn">FAVOURITES</a>
       <a routerLink="/recipes/new" class="custom-btn">ADD RECIPE</a>
+
     </nav>
 
     <div class="user-info">
@@ -22,7 +24,7 @@
       <button (click)="logout()" class="logout-btn" >⍈</button>
     </div>
   </ng-container>
-  
+
   <ng-template #showLogin>
     <nav class="nav-links">
       <a routerLink="/login" class="custom-btn">LOGIN</a>
